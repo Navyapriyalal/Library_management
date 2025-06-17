@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:employee_manage/pages/login_page.dart';
-import 'package:employee_manage/db/db_helper.dart';
+import 'package:library_management/pages/login_page.dart';
+import 'package:library_management/db/db_helper.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
