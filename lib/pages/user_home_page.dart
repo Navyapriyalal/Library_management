@@ -22,7 +22,29 @@ class UserHomePage extends StatelessWidget {
               icon: Icon(Icons.logout),
               tooltip: 'Logout',
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/login');
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text("Logout Confirmation"),
+                    content: Text("Are you sure you want to log out?"),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context), // Cancel
+                        child: Text("Cancel"),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context); // Close the dialog
+                          Navigator.pushReplacementNamed(context, '/login');
+                        },
+                        child: Text("Logout", style: TextStyle(color: Colors.white),),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               },
             ),
           ],

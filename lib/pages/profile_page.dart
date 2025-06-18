@@ -31,8 +31,10 @@ class _ProfilePageState extends State<ProfilePage> {
     if (pickedFile != null) {
       final file = File(pickedFile.path);
       final uploadedUrl = await ImageKitService.uploadImage(file);
+      print(uploadedUrl);
 
       if (uploadedUrl != null) {
+        print('inside fucntion');
         await DBHelper.updateUserProfileImage(currentUser.email, uploadedUrl);
 
         setState(() {

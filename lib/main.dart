@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:library_management/pages/login_page.dart';
@@ -5,12 +6,14 @@ import 'package:library_management/db/db_helper.dart';
 import 'package:library_management/pages/admin_home_page.dart';
 import 'package:library_management/pages/user_home_page.dart';
 import 'models/user_model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
-  await DBHelper.initDb();// Set the FFI factory
+  await DBHelper.initDb();
+  await dotenv.load(fileName: ".env");
   runApp(MyApp());
 }
 

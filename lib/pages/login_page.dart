@@ -37,6 +37,8 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => UserHomePage(user:user)));
       }
     } else {
+      emailController.clear();
+      passwordController.clear();
       _showError('Invalid email or password');
     }
   }
