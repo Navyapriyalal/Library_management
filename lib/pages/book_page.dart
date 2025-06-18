@@ -148,7 +148,23 @@ class _BookPageState extends State<BookPage> {
                   DataCell(Text(book.language ?? '')),
                   DataCell(Text(book.price?.toString() ?? '')),
                   DataCell(Text(book.yearOfRelease?.toString() ?? '')),
-                  DataCell(Text(book.status)),
+                  DataCell(
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: book.status == 'available' ? Colors.green[100] : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        book.status,
+                        style: TextStyle(
+                          color: book.status == 'available' ? Colors.green[800] : Colors.grey[700],
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+
                   DataCell(Row(
                     children: [
                       if (widget.user.role.toLowerCase() == 'admin') ...[
@@ -162,9 +178,20 @@ class _BookPageState extends State<BookPage> {
                         ),
                       ] else ...[
                         ElevatedButton(
-                          onPressed: () => borrowBook(book.id!), // 👈 Create this function
-                          child: Text("Borrow"),
-                        ),
+                          onPressed: book.status == 'available'
+                              ? () => borrowBook(book.id!)
+                              : null, // disables the button if unavailable
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: book.status == 'available' ? Colors.blue : Colors.grey,
+                          ),
+                          child: Text(
+                            'Borrow',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+
                       ]
                     ],
                   )),

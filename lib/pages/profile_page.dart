@@ -11,14 +11,6 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Profile"),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              Navigator.popUntil(context, (route) => route.isFirst); // Go back to login page
-            },
-          )
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -15,6 +15,15 @@ class AdminHomePage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text('Library Admin Dashboard'),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout),
+              tooltip: 'Logout',
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+            ),
+          ],
           bottom: TabBar(
             tabs: [
               Tab(text: 'Books'),
