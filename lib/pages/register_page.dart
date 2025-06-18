@@ -16,8 +16,10 @@ class _RegisterPageState extends State<RegisterPage> {
   final passwordController = TextEditingController();
   final confirmPwdController = TextEditingController();
   final aadharController = TextEditingController();
+  final genderController = TextEditingController();
 
   String selectedRole = 'user'; // default role
+  String selectedGender = 'Male';
 
   void register() async {
     final name = nameController.text.trim();
@@ -27,6 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final password = passwordController.text.trim();
     final confirmPwd = confirmPwdController.text.trim();
     final aadhar = aadharController.text.trim();
+    final gender = genderController.text.trim();
 
     if ([name, email, mobile, address, password, confirmPwd, aadhar].any((e) => e.isEmpty)) {
       _showError('All fields are required');
@@ -48,6 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
         role: selectedRole,
         profile: '', // you’ll handle profile later
         aadhar: aadhar,
+        gender: gender,
       );
 
       await DBHelper.insertUser(user);
@@ -86,7 +90,7 @@ class _RegisterPageState extends State<RegisterPage> {
         child: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.all(24),
-            width: 400,
+            width: 600,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
@@ -107,21 +111,59 @@ class _RegisterPageState extends State<RegisterPage> {
                         fontWeight: FontWeight.bold,
                         color: Colors.blueAccent)),
                 SizedBox(height: 20),
-                _buildTextField(nameController, 'Name'),
+                Row(
+                  children: [
+                    Expanded(child: _buildTextField(nameController, 'Name')),
+                    SizedBox(width: 16),
+                    Expanded(child: _buildTextField(emailController, 'Email')),
+                  ],
+                ),
                 SizedBox(height: 16),
-                _buildTextField(emailController, 'Email'),
+                Row(
+                  children: [
+                    Expanded(child: _buildTextField(mobileController, 'Mobile')),
+                    SizedBox(width: 16),
+                    Expanded(child: _buildTextField(aadharController, 'Aadhar')),
+                  ],
+                ),
                 SizedBox(height: 16),
-                _buildTextField(mobileController, 'Mobile'),
-                SizedBox(height: 16),
-                _buildTextField(addressController, 'Address'),
-                SizedBox(height: 16),
-                _buildTextField(aadharController, 'Aadhar'),
-                SizedBox(height: 16),
-                _buildTextField(passwordController, 'Password', obscure: true),
-                SizedBox(height: 16),
-                _buildTextField(confirmPwdController, 'Confirm Password', obscure: true),
-                SizedBox(height: 16),
-                _buildDropdownRole(),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildDropdown(
+                        items: ['Male', 'Female'],
+                        selectedValue: selectedGender,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedGender = value!;
+                          });
+                        },
+                        labelText: 'Gender',
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: _buildDropdown(
+                        items: ['user', 'admin'],
+                        selectedValue: selectedRole,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedRole = value!;
+                          });
+                        },
+                        labelText: 'Role',
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16,),
+                Row(
+                  children: [
+                    Expanded(child: _buildTextField(passwordController, 'Password', obscure: true)),
+                    SizedBox(width: 16),
+                    Expanded(child: _buildTextField(confirmPwdController, 'Confirm Password', obscure: true)),
+                  ],
+                ),
                 SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: register,
@@ -163,22 +205,23 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _buildDropdownRole() {
+  Widget _buildDropdown({
+    required List<String> items,
+    required String? selectedValue,
+    required void Function(String?) onChanged,
+    required String labelText,
+  }) {
     return DropdownButtonFormField<String>(
-      value: selectedRole,
-      items: ['user', 'admin'].map((role) {
+      value: selectedValue,
+      items: items.map((item) {
         return DropdownMenuItem(
-          value: role,
-          child: Text(role[0].toUpperCase() + role.substring(1)),
+          value: item,
+          child: Text(item[0].toUpperCase() + item.substring(1)),
         );
       }).toList(),
-      onChanged: (value) {
-        setState(() {
-          selectedRole = value!;
-        });
-      },
+      onChanged: onChanged,
       decoration: InputDecoration(
-        labelText: 'Select Role',
+        labelText: labelText,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );

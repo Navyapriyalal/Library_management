@@ -29,7 +29,8 @@ class DBHelper {
             password TEXT,
             role TEXT,
             profile TEXT,
-            aadhar TEXT
+            aadhar TEXT, 
+            gender TEXT CHECK(gender in ('Male', 'Female'))
           )
         ''');
 
@@ -103,6 +104,16 @@ class DBHelper {
       whereArgs: [id],
     );
   }
+
+  static Future<int> updateUserProfileImage(String email, String imageUrl) async {
+    return await _db!.update(
+      'users',
+      {'profile': imageUrl},
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+  }
+
   // ===================== BOOKS =====================
 
   static Future<int> insertBook(Book book) async {

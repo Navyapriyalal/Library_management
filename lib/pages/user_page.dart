@@ -32,6 +32,7 @@ class _UserPageState extends State<UserPage> {
     final roleController = TextEditingController(text: user?.role ?? '');
     final profileController = TextEditingController(text: user?.profile ?? '');
     final aadharController = TextEditingController(text: user?.aadhar ?? '');
+    final genderController = TextEditingController(text: user?.gender ?? '');
 
     showDialog(
       context: context,
@@ -48,6 +49,7 @@ class _UserPageState extends State<UserPage> {
               TextField(controller: roleController, decoration: InputDecoration(labelText: 'Role')),
               TextField(controller: profileController, decoration: InputDecoration(labelText: 'Profile')),
               TextField(controller: aadharController, decoration: InputDecoration(labelText: 'Aadhar')),
+              TextField(controller: genderController, decoration: InputDecoration(labelText: 'Gender')),
             ],
           ),
         ),
@@ -65,6 +67,7 @@ class _UserPageState extends State<UserPage> {
                 role: roleController.text,
                 profile: profileController.text,
                 aadhar: aadharController.text,
+                gender: genderController.text,
               );
               if (user == null) {
                 await DBHelper.insertUser(newUser);
@@ -114,6 +117,7 @@ class _UserPageState extends State<UserPage> {
                   DataColumn(label: Text('Email')),
                   DataColumn(label: Text('Mobile')),
                   DataColumn(label: Text('Address')),
+                  DataColumn(label: Text('Gender')),
                   DataColumn(label: Text('Role')),
                   DataColumn(label: Text('Actions')),
                 ],
@@ -123,6 +127,7 @@ class _UserPageState extends State<UserPage> {
                   DataCell(Text(user.email)),
                   DataCell(Text(user.mobile)),
                   DataCell(Text(user.address)),
+                  DataCell(Text(user.gender)),
                   DataCell(Text(user.role)),
                   DataCell(Row(
                     children: [
