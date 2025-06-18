@@ -2,8 +2,14 @@
 import 'package:flutter/material.dart';
 import 'package:library_management/db/db_helper.dart';
 import 'package:library_management/models/book_model.dart';
+import 'package:library_management/models/user_model.dart';
+import 'package:library_management/models/borrower_model.dart';
 
 class BookPage extends StatefulWidget {
+  final User user; // 👈 Add this
+
+  const BookPage({Key? key, required this.user}) : super(key: key);
+
   @override
   State<BookPage> createState() => _BookPageState();
 }
@@ -23,6 +29,23 @@ class _BookPageState extends State<BookPage> {
       books = data;
     });
   }
+
+  void borrowBook(int bookId) async {
+    final borrower = Borrower(
+      bookId: bookId,
+      userEmail: widget.user.email,
+      deliveryDate: DateTime.now().toString().split(' ')[0],
+      returnDate: '', // You can set a return date if you like
+    );
+
+    await DBHelper.insertBorrower(borrower);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Book borrowed successfully!')),
+    );
+  }
+
+
 
   void showBookForm({Book? book}) {
     final nameController = TextEditingController(text: book?.name ?? '');
@@ -93,6 +116,7 @@ class _BookPageState extends State<BookPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('Books List', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+              if (widget.user.role.toLowerCase() == 'admin')
               ElevatedButton.icon(
                 onPressed: () => showBookForm(),
                 icon: Icon(Icons.add),
@@ -127,8 +151,21 @@ class _BookPageState extends State<BookPage> {
                   DataCell(Text(book.status)),
                   DataCell(Row(
                     children: [
-                      IconButton(icon: Icon(Icons.edit), onPressed: () => showBookForm(book: book)),
-                      IconButton(icon: Icon(Icons.delete), onPressed: () => deleteBook(book.id!)),
+                      if (widget.user.role.toLowerCase() == 'admin') ...[
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () => showBookForm(book: book),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () => deleteBook(book.id!),
+                        ),
+                      ] else ...[
+                        ElevatedButton(
+                          onPressed: () => borrowBook(book.id!), // 👈 Create this function
+                          child: Text("Borrow"),
+                        ),
+                      ]
                     ],
                   )),
                 ])).toList(),

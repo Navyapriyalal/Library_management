@@ -3,7 +3,7 @@ import 'package:library_management/db/db_helper.dart';
 import 'package:library_management/models/user_model.dart';
 import 'package:library_management/pages/register_page.dart';
 import 'package:library_management/pages/admin_home_page.dart';
-// import 'package:library_management/pages/user_home.dart';
+import 'package:library_management/pages/user_home_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -31,10 +31,10 @@ class _LoginPageState extends State<LoginPage> {
     if (user != null) {
       if (user.role == 'admin') {
         //print("Navigate to Admin Home Page");
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => AdminHomePage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => AdminHomePage(user: user,)));
       } else {
-        print("Navigate to User Home Page");
-        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => UserHomePage()));
+        //print("Navigate to User Home Page");
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => UserHomePage(user:user)));
       }
     } else {
       _showError('Invalid email or password');

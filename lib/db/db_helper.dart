@@ -18,6 +18,7 @@ class DBHelper {
     _db = await databaseFactory.openDatabase(path, options: OpenDatabaseOptions(
       version: 1,
       onCreate: (db, version) async {
+        await db.execute('PRAGMA foreign_keys = ON');
         await db.execute('''
           CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -57,6 +58,9 @@ class DBHelper {
           )
         ''');
       },
+      onOpen: (db) async {
+        await db.execute('PRAGMA foreign_keys = ON');
+      },
     ));
   }
 
@@ -83,6 +87,22 @@ class DBHelper {
     return result.map((e) => User.fromMap(e)).toList();
   }
 
+  static Future<int> updateUser(User user) async {
+    return await _db!.update(
+      'users',
+      user.toMap(),
+      where: 'id = ?',
+      whereArgs: [user.id],
+    );
+  }
+
+  static Future<int> deleteUser(int id) async {
+    return await _db!.delete(
+      'users',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
   // ===================== BOOKS =====================
 
   static Future<int> insertBook(Book book) async {
@@ -106,6 +126,17 @@ class DBHelper {
   static Future<int> deleteBook(int id) async {
     return await _db!.delete('books', where: 'id = ?', whereArgs: [id]);
   }
+
+  static Future<List<Book>> getBooksForUser(String userEmail) async {
+    final result = await _db!.rawQuery('''
+    SELECT b.* FROM books b
+    INNER JOIN borrowers br ON b.id = br.book_id
+    WHERE br.user_email = ?
+  ''', [userEmail]);
+
+    return result.map((e) => Book.fromMap(e)).toList();
+  }
+
 
   // ===================== BORROWERS =====================
 
